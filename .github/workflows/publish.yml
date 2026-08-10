@@ -1,0 +1,58 @@
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org/
+          package-manager-cache: false
+      - name: Use the reviewed npm version
+        run: npm install --global npm@12.0.2
+      - name: Verify release tag
+        shell: bash
+        run: |
+          expected="v$(node --print "require('./package.json').version")"
+          if [[ "$GITHUB_REF_NAME" != "$expected" ]]; then
+            echo "Release tag $GITHUB_REF_NAME does not match $expected" >&2
+            exit 1
+          fi
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      - run: npm run test:dependency
+      - run: npm run pack:check
+      - name: Check whether this exact version already exists
+        id: published
+        shell: bash
+        run: |
+          name="$(node --print "require('./package.json').name")"
+          version="$(node --print "require('./package.json').version")"
+          published="$(npm view "$name@$version" version --registry=https://registry.npmjs.org/ 2>/dev/null || true)"
+          if [[ "$published" == "$version" ]]; then
+            published_git_head="$(npm view "$name@$version" gitHead --registry=https://registry.npmjs.org/)"
+            if [[ "$published_git_head" != "$GITHUB_SHA" ]]; then
+              echo "$name@$version already exists from a different Git commit." >&2
+              exit 1
+            fi
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "$name@$version already matches this commit; skipping the idempotent publish."
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Publish
+        if: steps.published.outputs.exists != 'true'
+        run: npm publish --access public --registry=https://registry.npmjs.org/

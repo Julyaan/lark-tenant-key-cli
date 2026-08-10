@@ -1,0 +1,57 @@
+{
+  "name": "lark-tenant-key-cli",
+  "version": "0.1.0",
+  "description": "Unofficial minimal-permission CLI that retrieves the current Lark or Feishu tenant_key using the official lark-cli OAuth flow.",
+  "type": "module",
+  "bin": {
+    "lark-tenant-key-cli": "bin/lark-tenant-key.mjs",
+    "lark-tenant-key": "bin/lark-tenant-key.mjs",
+    "feishu-tenant-key": "bin/lark-tenant-key.mjs"
+  },
+  "files": [
+    "bin/",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "LICENSE",
+    "PRIVACY.md",
+    "README.md",
+    "README.zh-CN.md",
+    "RELEASING.md",
+    "SECURITY.md"
+  ],
+  "scripts": {
+    "check": "node --check bin/lark-tenant-key.mjs && node --check test/cli.test.mjs && node --check test/dependency-contract.mjs",
+    "test": "node --test test/cli.test.mjs",
+    "test:dependency": "node test/dependency-contract.mjs",
+    "pack:check": "npm pack --dry-run --json",
+    "prepublishOnly": "npm run check && npm test && npm run test:dependency"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@larksuite/cli": "1.0.85"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Julyaan/lark-tenant-key-cli.git"
+  },
+  "homepage": "https://github.com/Julyaan/lark-tenant-key-cli#readme",
+  "bugs": {
+    "url": "https://github.com/Julyaan/lark-tenant-key-cli/issues"
+  },
+  "keywords": [
+    "feishu",
+    "lark",
+    "larksuite",
+    "tenant-key",
+    "oauth",
+    "cli"
+  ],
+  "author": "Julyaan",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
