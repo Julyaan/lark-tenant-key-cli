@@ -47,8 +47,14 @@ npm install --global lark-tenant-key-cli
 lark-tenant-key --setup --brand lark
 ```
 
-The final value is the only content written to stdout, so shell capture is
-safe:
+When run directly in a terminal, the result is easy to spot:
+
+```text
+您当前飞书应用的 tenant key 是： tenant_key_example
+```
+
+When stdout is piped or captured, the label is omitted and only the raw value
+is returned, so shell capture remains safe:
 
 ```bash
 export LARK_TENANT_KEY="$(lark-tenant-key)"

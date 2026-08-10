@@ -1,6 +1,6 @@
 {
   "name": "lark-tenant-key-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Unofficial minimal-permission CLI that retrieves the current Lark or Feishu tenant_key using the official lark-cli OAuth flow.",
   "type": "module",
   "bin": {

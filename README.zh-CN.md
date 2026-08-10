@@ -43,7 +43,13 @@ npm install --global lark-tenant-key-cli
 lark-tenant-key --setup --brand feishu
 ```
 
-标准输出只包含最终 tenant_key，因此可安全用于命令替换：
+直接在终端运行时，结果会带上醒目前缀：
+
+```text
+您当前飞书应用的 tenant key 是： tenant_key_example
+```
+
+通过管道或命令替换捕获输出时，前缀会自动省略，只返回原始 tenant_key，因此脚本仍可安全使用：
 
 ```bash
 export LARK_TENANT_KEY="$(lark-tenant-key)"

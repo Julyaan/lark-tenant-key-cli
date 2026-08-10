@@ -143,6 +143,19 @@ test('uses an existing user authorization without logging in again', async () =>
   ]]);
 });
 
+test('adds a clear label when a person runs the command in a terminal', async () => {
+  const harness = await makeHarness('existing');
+  const result = runScript(harness, [], {
+    LARK_TENANT_KEY_TEST_STDOUT_TTY: '1',
+  });
+
+  assert.equal(result.status, 0);
+  assert.equal(
+    result.stdout,
+    '您当前飞书应用的 tenant key 是： tenant_key_for_test\n',
+  );
+});
+
 test('requests only offline_access when user authorization is missing', async () => {
   const harness = await makeHarness('login-needed');
   const result = runScript(harness);
@@ -213,7 +226,9 @@ test('creates a named Lark profile without passing a nonexistent global profile'
 
 test('supports JSON output and lark-cli profiles', async () => {
   const harness = await makeHarness('existing');
-  const result = runScript(harness, ['--json', '--profile', 'work']);
+  const result = runScript(harness, ['--json', '--profile', 'work'], {
+    LARK_TENANT_KEY_TEST_STDOUT_TTY: '1',
+  });
 
   assert.equal(result.status, 0);
   assert.deepEqual(JSON.parse(result.stdout), {
@@ -229,7 +244,7 @@ test('prints package version without invoking lark-cli', async () => {
   const result = runScript(harness, ['--version']);
 
   assert.equal(result.status, 0);
-  assert.equal(result.stdout, '0.1.0\n');
+  assert.equal(result.stdout, '0.1.1\n');
   await assert.rejects(readFile(harness.logFile, 'utf8'), { code: 'ENOENT' });
 });
 

@@ -43,7 +43,8 @@ Options:
   -v, --version      Print this package version
   -h, --help         Show this help
 
-stdout contains only tenant_key (or JSON when --json is used).
+Interactive terminals show a human-readable label before tenant_key.
+Piped/captured stdout remains the raw tenant_key (or JSON with --json).
 Prompts, progress, and errors are written to stderr.
 `);
 }
@@ -403,9 +404,15 @@ function login(invocation, options) {
 }
 
 function printTenantKey(tenantKey, options) {
+  const testTerminal =
+    process.env.NODE_ENV === 'test' &&
+    process.env.LARK_TENANT_KEY_TEST_STDOUT_TTY === '1';
+  const humanTerminal = process.stdout.isTTY || testTerminal;
   const output = options.json
     ? JSON.stringify({ tenant_key: tenantKey })
-    : tenantKey;
+    : humanTerminal
+      ? `您当前飞书应用的 tenant key 是： ${tenantKey}`
+      : tenantKey;
   process.stdout.write(`${output}\n`);
 }
 
