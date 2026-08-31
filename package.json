@@ -30,7 +30,7 @@
     "node": ">=22"
   },
   "dependencies": {
-    "@larksuite/cli": "1.0.85"
+    "@larksuite/cli": "1.0.91"
   },
   "repository": {
     "type": "git",
